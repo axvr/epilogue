@@ -1,6 +1,8 @@
 {:paths ["src"]
  :deps {org.clojure/clojure {:mvn/version "1.11.1"}
-        org.clojure/tools.logging {:mvn/version "1.2.4"}}
+        org.clojure/tools.logging {:mvn/version "1.2.4"}
+        ch.qos.logback.contrib/logback-jackson {:mvn/version "0.1.5"}
+        ch.qos.logback.contrib/logback-json-classic {:mvn/version "0.1.5"}}
  :aliases
  {:test {:extra-paths ["test"]
          :extra-deps {io.github.cognitect-labs/test-runner

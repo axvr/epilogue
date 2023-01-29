@@ -1,0 +1,24 @@
+Logs are the epilogue of program execution.
+
+- move JsonLayout to separate "uk.axvr.epilogue.logback.json" lib?
+- wrapper around tools.logging/log providing context options.
+- basic instrumentation:
+
+    (defmacro test-log []
+      (prn :full-file (format "%s:%s:%s" *file* (:line (meta &form)) (:column (meta &form))))
+      (prn :file *file*)
+      (prn :ns (str *ns*))
+      (prn :form (meta &form)))
+
+- way to add to global context (e.g. version, env)
+- value masking by path.
+- avoid overriding default keys.  (Stack prepend "@")
+- check performance.
+- check how dynamic var behaves when running multiple logs in parallel.
+- check dynamic var works with Pedestal interceptors.
+- value conversion.
+- support namespace-qualified keywords.
+- wrappers to support manipulation of the MDC.
+  - Option to add context to MDC instead of using a custom backend.
+  - https://github.com/pyr/unilog/blob/master/src/unilog/context.clj
+- add sample project.
