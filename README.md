@@ -19,10 +19,10 @@ However in many situations we still often need to integrate with this Java
 logging mess, but want more useful information in our logs.
 
 Epilogue is a simple library that wraps clojure.tools.logging, with support for
-logging structured data.  While Epilogue cannot natively log this structured
-data, native backends can be easily created to add the additional data to the
-logging backend of choice.  Epilogue provides a [Logback][] JSON layout
-backend.
+logging structured data.  As Epilogue cannot log this structured data on its
+own, native backends can be easily created to add the additional data to the
+logging backend of choice.  Epilogue provides a JSON layout backend for
+[Logback][].
 
 [Logging in Clojure]: https://lambdaisland.com/blog/2020-06-12-logging-in-clojure-making-sense-of-the-mess
 [clojure.tools.logging]: https://github.com/clojure/tools.logging

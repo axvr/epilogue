@@ -28,7 +28,9 @@
   (b/compile-clj {:ns-compile ['uk.axvr.epilogue.logback.json.JsonLayout]
                   :basis basis
                   :src-dirs ["src"]
-                  :class-dir class-dir})
+                  :class-dir class-dir
+                  :bindings {#'clojure.core/*assert* false
+                             #'clojure.core/*warn-on-reflection* true}})
   (b/jar {:class-dir class-dir
           :jar-file  jar-file}))
 
