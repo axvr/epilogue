@@ -1,35 +1,50 @@
 (ns build
   (:require [clojure.tools.build.api :as b]
-            [org.corfield.build :as bb]))
+            [deps-deploy.deps-deploy :as dd]))
 
 (def lib 'uk.axvr/epilogue)
-
 (def version
   (subs (b/git-process {:git-args ["describe" "--tags" "--abbrev=0"]}) 1))
+(def class-dir "target/classes")
+(def basis (b/create-basis {:project "deps.edn"}))
+(def jar-file (format "target/%s-%s.jar" (name lib) version))
 
-(defn- mkopts [opts]
-  (merge
-    {:lib     lib
-     :version version
-     :src-pom "build/pom.xml"}
-    opts))
-
-(defn clean
+(defn clean [_]
   "Clean the targets folder."
-  [opts]
-  (bb/clean (mkopts opts)))
+  (b/delete {:path "target"}))
 
 (defn jar
   "Build the JAR."
   [opts]
-  (-> (mkopts opts) clean bb/jar))
+  (clean nil)
+  (b/copy-dir {:src-dirs ["src" "resources"]
+               :target-dir class-dir})
+  (b/write-pom {:class-dir class-dir
+                :lib lib
+                :version version
+                :basis basis
+                :src-dirs ["src"]
+                :src-pom "build/pom.xml"})
+  (b/compile-clj {:ns-compile ['uk.axvr.epilogue.logback.json.JsonLayout]
+                  :basis basis
+                  :src-dirs ["src"]
+                  :class-dir class-dir})
+  (b/jar {:class-dir class-dir
+          :jar-file  jar-file}))
 
 (defn install
   "Install the JAR locally."
   [opts]
-  (bb/install (mkopts opts)))
+  (b/install
+    {:basis      basis
+     :lib        lib
+     :version    version
+     :jar-file   jar-file
+     :class-dir  class-dir}))
 
 (defn deploy
   "Deploy the JAR to Clojars."
   [opts]
-  (bb/deploy (mkopts opts)))
+  (dd/deploy {:installer :remote
+              :artifact (b/resolve-path jar-file)
+              :pom-file (b/pom-path {:lib lib, :class-dir class-dir})}))

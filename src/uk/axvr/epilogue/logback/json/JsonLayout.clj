@@ -1,4 +1,4 @@
-(ns uk.axvr.epilogue.logback.JsonLayout
+(ns uk.axvr.epilogue.logback.json.JsonLayout
   "Version of Logback JsonLayout hooked into Clojure that can add custom fields
   to the top-level context."
   (:require [uk.axvr.epilogue :as log])
