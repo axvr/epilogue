@@ -7,8 +7,10 @@
     ;; https://github.com/qos-ch/logback-contrib/blob/master/json/classic/src/main/java/ch/qos/logback/contrib/json/classic/JsonLayout.java
     :extends ch.qos.logback.contrib.json.classic.JsonLayout))
 
-(defn -addCustomDataToJsonMap [this map event]
+(defn -addCustomDataToJsonMap [this map ^ILoggingEvent event]
   ;; TODO: convert types and keys...  (Dates, etc.)
+  ;; Callback to the outer layer for what to do?
   (prn :??? (contains? map "timestamp2"))
+  (prn :type (type map))
   (when-let [ctx log/*context*]
     (.putAll map ctx)))

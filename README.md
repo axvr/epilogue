@@ -69,9 +69,13 @@ uk.axvr/epilogue.logback.json {:mvn/version "0.1"}
 ```
 
 ```clojure
-(require '[uk.axvr.epilogue :as log])
+(require '[uk.axvr.epilogue :as epi])
 
-(log/info "Log something"
+;; (epi/log :level   :warn
+;;          :message "Log something"
+;;          :context {:foo "bar"})
+
+(epi/info "Log something"
   {:hello [1 2 3]
    :world {:foo "bar"}})
 ```
