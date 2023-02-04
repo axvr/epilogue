@@ -1,28 +1,33 @@
 # Epilogue
 
-Simple superset wrapper around clojure.tools.logging providing structural logging support.
+Simple wrapper around [clojure.tools.logging][] providing structural logging
+support.
 
 ___Work in progress.  Not yet complete.___
 
 
 ## Rationale
 
-Logs are the epilogue of program execution.  They provide valuable insights
-into how your program really behaved.  Unfortunately the world of Java logging
+Logs are the epilogue of program execution.  They provide us valuable insights
+into how our programs really behaved.  Unfortunately, the world of Java logging
 is fraught with [complexity and competing solutions][Logging in Clojure].
-Clojure provides a excellent facade for these tools, [clojure.tools.logging][],
-but it unfortunately suffers from the same limitations.  Logs are strings.  No
-structured data.
+Luckily, Clojure provides us with an excellent facade for these tools,
+[clojure.tools.logging][].  However, it suffers from many of the same
+limitations.  Logs are strings; no structured data.
 
-It would be great to use better, simpler logging solutions like [μ/log][ulog].
-However in many situations we still often need to integrate with this Java
-logging mess, but want more useful information in our logs.
+While it would be great to use better, simpler logging solutions like
+[μ/log][ulog].  Many situations still require full integration with the Java
+logging mess.  Is there a half-way point?  Can we add more data to our logs in
+a semi-structured way?
 
-Epilogue is a simple library that wraps clojure.tools.logging, with support for
-logging structured data.  As Epilogue cannot log this structured data on its
-own, native backends can be easily created to add the additional data to the
-logging backend of choice.  Epilogue provides a JSON layout backend for
-[Logback][].
+Epilogue is a simple library that wraps tools.logging, with support for logging
+structured data.  As Epilogue cannot log this structured data on its own,
+native backends can be easily created to add the additional data to the logging
+backend of choice.  (Epilogue provides a JSON layout backend for [Logback][].)
+
+Unlike other solutions in this space, Epilogue is much simpler and is intended
+to be used directly alongside tools.logging.  (With Epilogue you can even add
+additional context to logs produced by any Clojure lib using tools.logging.)
 
 [Logging in Clojure]: https://lambdaisland.com/blog/2020-06-12-logging-in-clojure-making-sense-of-the-mess
 [clojure.tools.logging]: https://github.com/clojure/tools.logging
