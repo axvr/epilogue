@@ -1,8 +1,8 @@
 - Move JsonLayout to separate "uk.axvr.epilogue.logback.json" lib.
-- Add mechanism to add to global context (e.g. version, env)
-- Avoid overriding default keys.  (Stack prepend "@")
 - Value conversion.  (Accept conversion function.)
-- Support namespace-qualified keywords.
+  - Support namespace-qualified keywords.
+  - Avoid overriding default keys.  (Stack prepend "@")
+  - Value masking by path.
 - Wrappers to support manipulation of the MDC.
   - Option to add context to MDC instead of using a custom backend.
   - uk.axvr.epilogue.mdc namespace
@@ -10,8 +10,10 @@
   - https://github.com/pyr/unilog/blob/master/src/unilog/context.clj
     - Cambium also contains something similar.
 - Add sample project.
-- Value masking by path.
+- Spy macro.
 
-- Check performance.
-- Check how dynamic var behaves when running multiple logs in parallel.
-- Check dynamic var works with Pedestal interceptors.
+- Check:
+  - performance.
+  - how dynamic var behaves when running multiple logs in parallel.
+  - dynamic var works with Pedestal interceptors.
+  - globally modifing context works.

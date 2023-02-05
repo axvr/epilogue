@@ -23,6 +23,7 @@
   `(binding [*context* (atom (merge @*context* ~context))]
      ~@body))
 
+;; TODO: write doc-string.
 (defmacro log
   ""
   [message context & {:keys [level throwable logger-factory logger-ns]
@@ -38,6 +39,7 @@
               ~message)))
 
 ;; TODO: write generated doc-string.
+;; TODO: log with no context.
 (defmacro ^:private deflevel [level]
   `(defmacro ~(symbol level)
      ""
@@ -54,3 +56,15 @@
 (deflevel :trace)
 
 ;; TODO: add spy macro.
+
+(comment
+  (epi/log "message")
+  (epi/log "message" {:foo 1})
+  (epi/log "message" {:foo 1} :level :info)
+
+  (epi/error "message" {:foo 1})
+  (epi/error "message" {:foo 1} :throwable e)  ; Not ideal?
+
+  '([message & {:as opts}]
+    [message context & {:as opts}])
+  )
