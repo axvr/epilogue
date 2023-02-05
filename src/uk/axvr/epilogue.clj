@@ -5,53 +5,52 @@
 
 (def ^:dynamic *context*
   "Logging context.  This dynamic var stores the structured data collected to
-  be logged."
-  {})
+  be logged wrapped in an atom.
 
-(defmacro with-context [context & body]
-  `(binding [*context* (merge *context* ~context)]
+  Why an atom AND a dynamic var?  The dynamic var allows this value to
+  differentiate between threads and dynamic scope, while the atom provides safe
+  alteration and the ability to set global context values.
+
+      ;; Example: merge environment and version values into the global context
+      ;; from program config.
+      (swap! uk.axvr.epilogue/*context* merge
+        (select-keys config [:environment :version]))"
+  (atom {}))
+
+(defmacro with-context
+  "Merge extra data into the logging context."
+  [context & body]
+  `(binding [*context* (atom (merge @*context* ~context))]
      ~@body))
-
-(comment
-  (with-context {:foo :bar}
-    ;; add control ns-qualified keywords to context.  (e.g. ::ctx->mdc? true)
-    (log/info "Foo"))
-  )
 
 (defmacro log
   ""
-  [& {:keys [level message context logger-factory logger-ns throwable]
-      :or   {level :info}}]
+  [message context & {:keys [level throwable logger-factory logger-ns]
+                      :or   {level :info}}]
   `(with-context (assoc ~context
                         :source (assoc ~(meta &form)
                                        :file *file*
                                        :namespace *ns*))
-     ;; TODO: replace list with log/log
-     (list ~logger-factory (or ~logger-ns *ns*) ~level ~throwable (or ~message ~context))))
+     (log/log ~logger-factory
+              (or ~logger-ns *ns*)
+              ~level
+              ~throwable
+              ~message)))
 
-(comment
-  (epi/log
-    :level :info
-    :message "Hello world!"
-    :context {:foo "bar"})
+;; TODO: write generated doc-string.
+(defmacro ^:private deflevel [level]
+  `(defmacro ~(symbol level)
+     ""
+     {:arglists '~'([message context & {:as opts}])}
+     [message# context# & {:as opts#}]
+     `(log ~message# ~context# (assoc opts# :level ~~(keyword level)))))
 
-  (epi/log :level :info, :message "Hello world!")
-  (epi/log :level :info, :msg "Hello world!")
+(declare fatal error warn info debug trace)
+(deflevel :fatal)
+(deflevel :error)
+(deflevel :warn)
+(deflevel :info)
+(deflevel :debug)
+(deflevel :trace)
 
-  ;; More traditional style of logging.
-  (epi/info "Hello world!" {:foo "bar"})
-
-  ;; Probably not possible, but would be nice.
-  (epi/log {:foo "bar"} :level :fatal) ; context in first slot
-  (epi/log "foo bar")                  ; message in first slot
-  (epi/log ::something-happened)       ; message in first slot
-  (epi/log :message "foo bar")         ; keyword in first slot
-  )
-
-(def levels [:trace :debug :info :warn :error :fatal :spy])
-
-(comment
-  (log/set-global-context!
-    {:environment config/env
-     :version     config/version})
-  )
+;; TODO: add spy macro.
