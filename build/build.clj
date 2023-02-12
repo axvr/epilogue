@@ -3,6 +3,7 @@
             [deps-deploy.deps-deploy :as dd]))
 
 (def lib 'uk.axvr/epilogue)
+;; (def lib2 'uk.axvr/epilogue.logback.json)
 (def version
   (subs (b/git-process {:git-args ["describe" "--tags" "--abbrev=0"]}) 1))
 (def class-dir "target/classes")
